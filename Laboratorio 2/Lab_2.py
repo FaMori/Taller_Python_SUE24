@@ -1,33 +1,44 @@
-# 0. Introducción
+"""
+0. Introducción
 
-## Utilizaremos un conjunto de datos de la serie `The Office`. Cada fila del conjunto de datos es una linea de diálogo.
+En este proyecto, trabajaremos con un conjunto de datos de la serie *The Office* con el objetivo de predecir la calificación de cada episodio 
+en la plataforma IMDB (https://www.imdb.com/). Para ello, utilizaremos una serie de variables o predictores que están incluidos en el conjunto 
+de datos y que construiremos progresivamente.
 
-## Queremos predecir la calificación del episodio obtenida en la plataforma [IMDB](https://www.imdb.com/) en base a predictores que están presentes en el conjunto de datos y que iremos construyendo.
+El conjunto de datos se encuentra dividido en tres archivos:
 
-# 1. Pandas.
+- `episodios.csv`: Incluye el nombre de cada episodio, la temporada a la que pertenece, y su calificación en IMDB.
+- `dialogos.csv`: Contiene los diálogos de cada episodio y el personaje que los pronunció, con un diálogo por línea.
+- `creadores.csv`: Indica los creadores que participaron en cada episodio. Cada fila representa un episodio, y cada columna 
+                   corresponde a un creador; un valor de 1 indica que el creador participó en el episodio.
+
+Los tres conjuntos de datos comparten el campo `episode_name`.
+"""
+
+#%% 1. Pandas - Preparacion de datos.
 import pandas as pd
 
 #%% 1.1 Como cargar un conjunto de datos.
-data = pd.read_csv("theoffice.csv")
+episodios = pd.read_csv("episodios.csv")
 
 #%% Vemos las primeras lineas del conjunto de datos para ver la estructura (Podemos usar la funcionalidad de spyder también).
-print(data.head())
+print(episodios.head())
 
 #%% 1.2 Seleccionar columnas.
 
 ### Hay columnas que no son de nuestro interés, por lo que las eliminaremos.
-data.drop(
-    columns=["index", "episode", "text_w_direction", "total_votes", "air_date"], 
+episodios.drop(
+    columns=["total_votes", "air_date"], 
     inplace=True
-) #inplace=True es igual a haber hecho data = data.drop(...)
+) #inplace=True es igual a haber hecho episodios = episodios.drop(...)
 
-### Si en vez de eliminar columnas queremos seleccionar solo algunas columnas. Podemos hacerlo utilizando loc o iloc.
+#%% Si en vez de eliminar columnas queremos seleccionar solo algunas columnas. Podemos hacerlo utilizando loc o iloc. 
 
-#%% loc: Selecciona columnas por nombre. 
-seleccion = data.loc[:, ["season", "episode_name", "director", "writer", "character", "text", "imdb_rating"]]
+#loc: Selecciona columnas por nombre. 
+seleccion = episodios.loc[:, ["episode_name", "season", "imdb_rating"]]
 
 #%% iloc: Selecciona columnas por índice.
-seleccion = data.iloc[:, [0, 1, 2, 3, 4, 5,6]]
+seleccion = episodios.iloc[:, [0, 1, 2,]]
 
 #%% 1.3 Creacion de atributos.
 
@@ -39,9 +50,11 @@ Queremos crear las siguientes dos variables objetivo:
 
 #%% Cantidad de lineas que tiene cada personaje en el episodio. 
 
-#Vamos a crear un conjunto de datos con la cantida de lineas de cada personaje en un episodio
+dialogos = pd.read_csv("dialogos.csv")
+
+#Vamos a crear un conjunto de datos con la cantidad de lineas de cada personaje en un episodio
 personajes = (
-    data
+    dialogos
         .groupby(['episode_name', 'character']) #Agrupamos por episodio y personaje
         .size() #Cuenta la cantidad de filas
         .reset_index(name='n') #Dejamos con la estructura episode_name, character, n
@@ -64,14 +77,109 @@ personajes = (
     personajes.
         pivot_table(
             index='episode_name', 
-            columns='character', 
-            values='n', 
-            fill_value=0
+            columns='character', #De donde tomar los nombres de las columnas
+            values='n', #De donde tomar el valor que le corresponde a cada columna
+            fill_value=0 #Para hacerlo completo. En caso de que el personaje no participe en el episodio asignar un 0.
         )
-        .reset_index()
+        .reset_index() #Recuperamos episode_name como columna.
     )
 
-### Q
+# Agregar comentario de como pasar a formato long?
+
+# Juntamos el conjunto de datos de episodios con el de personajes
+episodios = pd.merge(episodios, personajes, #
+                     on = "episode_name", #Que variable usamos para juntar.
+                     how="inner") #Que metodo usamos para juntar, mismos que dplyr: inner, left, right. full_join de dplyr equivale a outer.
+
+#TODO: Checkear lo de full_join y outer
+
+#%% 1.4 Tu Turno
+
+#Te animas a cargar el conjunto de datos con los creadores de cada episodio.
+creadores = pd.read_csv("creadores.csv")
+
+#Y a mergear el conjunto con el que ya tenemos?
+episodios = pd.merge(episodios, creadores)
 
 
-#%% 1.4
+#%% 1.5 Terminamos con la preparacion
+episodios = episodios.set_index("episode_name")
+print(episodios.describe())
+
+
+#%% 2. Matplotlib - Exploracion
+import matplotlib.pyplot as plt
+
+#TODO: Comentar alternativas: plotly, la que es como ggplot, ...?
+
+#%%2.1 Histograma de puntajes
+plt.figure(figsize=(8, 6))
+plt.hist(data = episodios, #Marcamos el conjunto de datos que queremos usar.
+         x = "imdb_rating", #Marcamos la variable que queremos graficar.
+         density=1, #Area = 1.
+         bins=20 #Cantidad de bins (todos del mismo tamaño).
+        )
+plt.xlabel("Puntaje IMDB") #Agregamos etiqueta al eje x.
+plt.ylabel("Densidad") #Agregamos etiqueta al eje y.
+plt.title("Distribución de puntajes") #Agregamos titulo al gráfico.
+plt.show() #Mostramos el gráfico.
+
+#%%2.2 Boxplot por temporada
+
+# Vamos a usar Seaborn, que nos permite la construcción de gráficos más complejos.
+# Seaborn está construido sobre Matplotlib, lo que nos permite combinarlos de manera natural.
+import seaborn as sns
+
+plt.figure(figsize=(8, 6))
+sns.boxplot(data = episodios, x = "season", y = "imdb_rating") #Aqui es que usamos seaborn, como vemos es muy similar a Matplotlib.
+plt.xlabel("Temporada")
+plt.ylabel("Puntaje IMDB")
+plt.title("Distribución de puntajes por temporada")
+plt.savefig("boxplot.png") #Exportamos el gráfico como un png.
+
+#%% 3. Scikit Learn - Modelos lineales
+from sklearn import model_selection, linear_model
+
+
+#%% 3.1 Separamos los predictores y la variable a predecir
+X = episodios.drop(columns = ["imdb_rating"])
+y = episodios.imdb_rating #Otra forma de seleccionar columnas
+
+#%% 3.2 Dividimos los datos en entrenamiento/test
+X_train, X_test, y_train, y_test  = model_selection.train_test_split(X, y, 
+                     test_size=0.2, #80% entrenamiento, 20% test.
+                     random_state = 1234 #Fijamos la semilla.
+                     )     
+
+
+#%% 3.3 Ajustamos el modelo con los datos de entrenamiento.
+lm = linear_model.LinearRegression()
+lm.fit(X_train,y_train)
+
+#%% 3.4 Realizamos la prediccion con el conjunto de test.
+y_pred = lm.predict(X_test)
+
+#Queremos crear un dataframe con los resultados de la prediccion.
+resultados = pd.DataFrame({ 
+    "Observado": y_test.values.flatten(),
+    "Predicho": y_pred.flatten()
+})
+
+#%% 3.5 Evaluamos resultados.
+from sklearn import metrics
+
+print(metrics.mean_absolute_error(resultados.Observado, resultados.Predicho))
+
+#%% 3.6 Tu turno!
+
+## Te animas a reportar el RMSE? https://scikit-learn.org/1.5/api/sklearn.metrics.html
+print(metrics.root_mean_squared_error(y_test, y_pred))
+
+## Te animas a crear un grafico de observado vs predicho?
+plt.scatter(data=resultados, x="Observado", y="Predicho")
+plt.xlabel("Observado")
+plt.ylabel("Predicho")
+plt.title("Observado vs Predicho")
+plt.plot([6.5,10],[6.5,10], color="black", linestyle="--")
+plt.show()
+# %%
