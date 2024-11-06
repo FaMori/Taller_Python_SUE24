@@ -22,9 +22,8 @@ x = 5
 # La funcion print() como en R permite imprimir el valor de una variable en la consola
 
 print(x)
-#%%
-# En este caso se imprime el valor de la variable x, que es 5
 
+#%%
 # Al igual que R los objetos mas simples en Python son los enteros, flotantes, booleanos y caracteres
 
 # Enteros (int)
@@ -34,7 +33,7 @@ x = 5
 y = 5.0
 
 # Booleanos (bool)
-w = F
+w = False 
 
 # A diferencia de R en Python los booleanos se escriben solamente con la primera letra en mayuscula True, False
 
@@ -86,7 +85,7 @@ print('Cadena en mayusculas:', z.upper())
 
 # Listas (list)
 
-# Las listas en Python son son estructuras de datos 
+# Las listas en Python son estructuras de datos 
 # que permiten almacenar multiples objetos de cualquier tipo en su interior (hasta listas dentro de listas)
 
 # La manera mas usual para definirla es mediante los caracteres [] donde se separan los elementos por comas
@@ -160,10 +159,14 @@ print('Lista con el nuevo elemento:', lista)
 # Para definir una tupla se utilizan los caracteres () donde al igual que las listas se separan los elementos por comas
 
 tupla = (5, 5.0, 'hola mundo', False)
+print(id(tupla))
 
 # Tambien es posible definir una tupla sin los parentesis, solamente separando los elementos por comas
 
-tupla = 5, 5.0, 'hola mundo', False
+tupla = 5, 5.0, 'hola mundo', False, "nuevo elemento" # DC
+print(id(tupla))
+
+# En este caso no estamos modificando el objeto, sino creando uno nuevo (con distinto id) # DC
 
 # Al igual que las listas es posible acceder a los elementos mediante su indice, siguiendo la misma logica
 
@@ -181,12 +184,6 @@ print('Flotante:', flotante)
 # Se debe tener en cuenta que el numero de variables definidas en la izquierda coincida con el numero de
 # elementos en la tupla, en caso contrario se generara un error
 
-#%%
-# Veamos que sucede si se intenta modificar un elemento de la tupla 
-
-tupla[0] = 10 
-# TypeError: 'tuple' object does not support item assignment
-# Una vez asignado un valor a una tupla NO es posible asignar un nuevo valor, diferenciandolo de las listas.
 
 #%%
 # Diccionarios (dict)
@@ -336,24 +333,27 @@ lista_copia_sup[0].add(5)
 print('Lista Original:', lista)
 print('Lista Copia Superficial:', lista_copia_sup)
 #%%
-# Se observa que la modificación realizada en el conjunto interno de la copia superficial afecta a la lista original
+# Se observa que la modificación realizada en el conjunto interno de la copia superficial
+# afecta a la lista original
 
 # Ahora volvamos a definir la lista y veamos que sucede si se realiza una copia profunda
 
 lista = [{1,3},{2,5}]
 
 # La copia profunda implica crear un nuevo objeto y rellenarlo con copias de los objetos secundarios
-# Para realizar una copia profunda de un objeto en Python se puede utilizar el modulo copy y la funcion deepcopy(),
-# Los modulos en Python se pueden considerar como librerias que contienen funciones y objetos que se pueden utilizar
-# en un script de Python, en este caso el modulo copy viene incluido en la libreria estandar de Python pero debe ser importado
-# para poder utilizarlo. 
+# Para realizar una copia profunda de un objeto en Python se puede utilizar el modulo copy y 
+# la funcion deepcopy(),
+# Los modulos en Python se pueden considerar como librerias que contienen funciones y objetos
+# que se pueden utilizar
+# en un script de Python, en este caso el modulo copy viene incluido en la libreria estandar de 
+# Python pero debe ser importado para poder utilizarlo. 
 # En este caso el modulo copy contiene la funcion deepcopy() que permite realizar copias profundas
 
 # Para importar un modulo en Python se utiliza la palabra reservada import seguida del nombre del modulo
 
 import copy
 
-# Una vez importado un modelo es posible utilizar una funcion  del mismo utilizando la siguiente sintaxis
+# Una vez importado un modulo es posible utilizar una funcion  del mismo utilizando la siguiente sintaxis
 
 # nombre_modulo.nombre_funcion(argumentos)
 
@@ -390,9 +390,12 @@ print('Lista Copia Profunda:', lista_copia_prof)
 
 #%%
 
-# Las estructuras de control en Python son similares a las de R, solo se debe tener en cuenta la sintaxis distinta de Python
-# A diferencia de R donde se utilizan llaves {} para definir bloques de codigo, en Python se utiliza la indentación
-# para definir los bloques de codigo, la misma se realiza mediante añadir sangrias usualmente 4 espacios o un tabulador
+# Las estructuras de control en Python son similares a las de R,
+# solo se debe tener en cuenta la sintaxis distinta de Python
+# A diferencia de R donde se utilizan llaves {} para definir bloques de codigo,
+# en Python se utiliza la indentación
+# para definir los bloques de codigo, la misma se realiza mediante añadir 
+# sangrias usualmente 4 espacios o un tabulador
 
 # Por ejemplo si se desea realizar la condicion IF-ELSE de R
 # x <- 5
@@ -442,7 +445,7 @@ if x >= 5:
 # Condicionales con listas, diccionarios
 
 # Si se desea realizar una condicion de pertenencia de un elemento a una lista, tupla o diccionario
-# se puede utilizar el in que devuelve True si el elemento se encuentra en la lista y False en caso contrario
+# se puede utilizar el "in" que devuelve True si el elemento se encuentra en la lista y False en caso contrario
 # Su funcionamiento es similar al %in% de R
 
 lista = [5, 40, 60]
@@ -478,11 +481,13 @@ if 'enteros' in diccionario:
 #	print(x)
 #}
 
-# En Python se puede realizar de la siguiente manera, donde se usa la funcion range() para generar una secuencia de numeros
+# En Python se puede realizar de la siguiente manera, donde se usa la funcion range() para generar 
+# una secuencia de numeros
 for x in range(1, 11): 
     print(x)
 
-# Es importante observar que la funcion range() el argumento de fin es exclusivo, es decir no se incluye en la secuencia
+# Es importante observar que la funcion range() el argumento de fin es exclusivo, 
+# es decir no se incluye en la secuencia
 # Si no se ingresa un argumento de inicio como por ejemplo range(11) el for comenzara en 0 y terminara en 10
 
 #%%
@@ -501,7 +506,8 @@ diccionario = {'lista': [1,2],
                 'flotante': 5.0,
                 'caracter': 'z'}
 
-# Para iterar sobre un diccionario se puede utilizar el metodo items() que retorna una lista de tuplas con los pares llave-valor
+# Para iterar sobre un diccionario se puede utilizar el metodo items() 
+# que retorna una lista de tuplas con los pares llave-valor
 
 print(diccionario.items())
 
@@ -536,12 +542,13 @@ while x < 5:
 #%%
 # FUNCIONES
 
-# Aunque Python es un lenguaje de programación orientado a objetos, es posible trabajar simplemente con funciones como en R
-# Las funciones en Python se definen mediante la palabra reservada def seguida del nombre de la funcion y los argumentos
-# que se desean pasar a la funcion. En este caso se cumple las mismas reglas que en R las variables definidas dentro de la funcion
+# Aunque Python es un lenguaje de programación orientado a objetos,
+# es posible trabajar simplemente con funciones como en R
+# Las funciones en Python se definen mediante la palabra reservada def seguida
+# del nombre de la funcion y los argumentos que se desean pasar a la funcion.
+# En este caso se cumple las mismas reglas que en R las variables definidas dentro de la funcion
 # son locales a la funcion y no pueden ser accedidas desde fuera de la funcion. Se debe 
-# respetar nuevamente la identación para definir
-# los bloques de codigo de la funcion.
+# respetar nuevamente la identación para definir los bloques de codigo de la funcion.
 
 # Por ejemplo definamos una funcion que compare si dos numeros son iguales
 def comparar_numeros(x, y):
@@ -550,7 +557,8 @@ def comparar_numeros(x, y):
     else:
         return 'x es distinto de y'
 
-# Para llamar a la funcion simplemente se debe escribir el nombre de la funcion seguido de los argumentos que se desean pasar
+# Para llamar a la funcion simplemente se debe escribir el nombre de la funcion
+# seguido de los argumentos que se desean pasar
 
 print(comparar_numeros(x=5, y=5))
 
@@ -589,8 +597,9 @@ print(multiplicacion(5, 5)) # Se retorna el valor de la multiplicacion
 
 # Uno de los cambios mas importantes y que cuesta mas acostumbrarse por un usuario normal de R
 # es el enfoque orientado a objetos de Python. La implementaciones medianamente complejas de la 
-# ciencia de datos como pueden ser algoritmos de machine learning o redes neuronales muchas veces se ven beneficiados de seguir una estructura
-# orientada a objetos. Por lo que en la gran mayoria implementaciones que se encuentran van a tener dentro
+# ciencia de datos como pueden ser algoritmos de machine learning o redes neuronales muchas veces 
+# se ven beneficiados de seguir una estructura orientada a objetos. 
+# Por lo que en la gran mayoria implementaciones que se encuentran van a tener dentro
 # conceptos como clases, objetos, atributos, metodos, etc.
 
 # CLASES
@@ -599,10 +608,11 @@ print(multiplicacion(5, 5)) # Se retorna el valor de la multiplicacion
 # Las clases de Python actúan como plantillas para crear objetos concretos llamados instancias de esa clase.
 
 # Una analogia muy utilizada es pensar en autos, las clases serian los autos en general, 
-# cuando definimo un auto apartir de una clase estamos creando una INSTANCIA de la clase,
-# pero a su vez cada auto que definimos puede tener ciertas caracteristicas que pueden diferir o no de otros autos, como por ejemplo
-# la marca, modelo, color, etc. estas caracteristicas se denominan ATRIBUTOS de la clase, donde cada instancia
-# de la clase puede tener distintos valores para los atributos.
+# cuando definimos un auto apartir de una clase estamos creando una INSTANCIA de la clase,
+# pero a su vez cada auto que definimos puede tener ciertas caracteristicas que pueden diferir 
+# o no de otros autos, como por ejemplo la marca, modelo, color, etc. estas caracteristicas
+# se denominan ATRIBUTOS de la clase, donde cada instancia de la clase puede
+# tener distintos valores para los atributos.
 # A su vez los autos tienen distintas funcionalidades como encender el motor, acelerar, frenar, etc.
 # estas funcionalidades se denominan METODOS de la clase.
 
@@ -629,7 +639,8 @@ auto = Auto()
 # de metodos llamados especiales que se utilizan para realizar operaciones especiales en las clases,
 # en este caso __init__ se ejecuta cada vez que se crea una instancia de la clase.
 # Observese los __ al inicio y al final del nombre del metodo, indican que es un metodo especial, existen
-# una gran cantidad de metodos especiales en Python que se pueden utilizar para realizar operaciones especiales en las clases.
+# una gran cantidad de metodos especiales en Python que se pueden utilizar para realizar operaciones
+# especiales en las clases.
 
 class Auto:
     # Metodo __init__ que se ejecuta cada vez que se crea una instancia de la clase
@@ -639,11 +650,13 @@ class Auto:
 
 # Observe que los metodos no son mas que funciones que se definen dentro de una clase, que tienen ciertas
 # particularidades como el argumento self.
-# Las clases de Python necesitan una forma de referirse a sí mismas, como forma de distinguir una instancia de otra. 
-# Por ejemplo si defino una instancia de auto con color rojo y otra con color azul, necesito una forma de distinguir
-# entre ambas instancias ahi es donde entra en juego el argumento self.
-# Como convencion se utiliza self como el primer argumento de los metodos de la clase, todos los metodos de la clase
-# que tengan self como argumento podran acceder a los atributos y metodos de la clase.
+# Las clases de Python necesitan una forma de referirse a sí mismas,
+# como forma de distinguir una instancia de otra. 
+# Por ejemplo si defino una instancia de auto con color rojo y otra con color azul,
+# necesito una forma de distinguir entre ambas instancias ahi es donde entra en juego el argumento self.
+# Como convencion se utiliza self como el primer argumento de los metodos de la clase, 
+# todos los metodos de la clase que tengan self como argumento podran acceder a los 
+# atributos y metodos de la clase.
 
 # Ahora añadamos un metodo que describa las caracteristicas del auto, reutilizemos el metodo __init__
 # anteriormente definido
@@ -664,13 +677,16 @@ class Auto:
 # que requiere el metodo __init__
 
 auto_1 = Auto(color='rojo', num_puertas=4)
+
 # En esta caso al pasarle los argumentos color='rojo' y num_puertas=4 se crea una instancia de la clase Auto
 # la misma se almacena en la variable auto_1 y el metodo __init__ le asigna 
 # los atributos color y num_puertas a la instancia.
 
 # Podemos verificar que los atributos se han asignado correctamente
 print(auto_1.color)
-# En este caso el self hace referencia a la instancia auto_1, con lo cual se accede al atributo color del auto_1
+
+# En este caso el self hace referencia a la instancia auto_1, 
+# con lo cual se accede al atributo color del auto_1
 
 #%%
 # De igual forma podemos definir otra instancia de la clase Auto
@@ -683,7 +699,8 @@ print(auto_2.descripcion())
 
 
 #%%
-# Ejercicio creemos una clase que tome como argumento una lista de numeros y
+# Ejercicio:
+# Crear una clase que tome como argumento una lista de numeros y
 # calcule la media y la desviacion estandar
 
 # Completar la clase MedidasResumen en los lugares indicados
