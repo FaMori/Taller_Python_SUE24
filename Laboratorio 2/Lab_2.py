@@ -28,16 +28,23 @@ Pandas tiene dos estructuras fundamentales (Serie y Dataframe)
 Serie: Informalmente podemos pensarlo como la columna de una tabla. (n, ) donde n es el numero de filas
 Dataframe: Es la tabla completa. Un dataframe esta compuesto por la combinacion de Series. 
            Tiene dimensión (n, m) donde m numero de columnas
+
+Ambas estructuras cuentan con indices que nos permiten identificar las filas. Estos indices pueden ser numeros (0,1,2,..)
+O pueden ser Texto ("Ana", "Beto", ...) o cualquier otro tipo de identificador unico.
 """""
 
 import pandas as pd #as se usa en Python para definir un alias. En vez de escribir pandas siempre que queramos usar una funcion
                     #poderemos escribir pd (es estandar llamar pandas como pd).
 
-#%% 1.1 Como cargar un conjunto de datos.
+#%% 1.1 Como cargar un conjunto de datos en un dataframe.
+
+## Verificar que en el angulo superior izquierdo tenemos configurado el directorio de trabajo.
 episodios = pd.read_csv("episodios.csv")
 
 #%% Vemos las primeras lineas del conjunto de datos para ver la estructura (Podemos usar la funcionalidad de spyder también).
 print(episodios.head())
+
+#Podemos visualizar los datos con Spyder tambien!
 
 #%% Checkeamos las clases del dataframe y de su columna
 print(type(episodios))
@@ -77,20 +84,35 @@ Queremos crear las siguientes dos variables objetivo:
 dialogos = pd.read_csv("dialogos.csv")
 
 #Vamos a crear un conjunto de datos con la cantidad de lineas de cada personaje en un episodio
+personajes = dialogos.groupby(['episode_name', 'character']) #Agrupamos por episodio y personaje
+personajes = personajes.size() #Cuenta la cantidad de filas. Tenemos un objeto Series con indice ['episode_name', 'character']
+personajes = personajes.reset_index(name='n') #Cuando aplicamos reset_index a un objeto Series pasamos el indice a columnas.
+                                              #Por lo que la Series pasa a ser un Dataframe.
+                                              #Con el argumento name, marcamos el valor que va a tener la columna con el valor
+                                              #Que tenia la serie. Si no ponemos nada vamos a ver que la columna queda con el
+                                              #nombre 0.
+
+"""
+Podriamos haber escrito el codigo anterior de la siguiente forma:
 personajes = (
     dialogos
         .groupby(['episode_name', 'character']) #Agrupamos por episodio y personaje
         .size() #Cuenta la cantidad de filas
         .reset_index(name='n') #Dejamos con la estructura episode_name, character, n
-)
+    )
+
+Esta tecnica de llamar metodos a medida que vamos modificando el objeto se llama 
+'Encadamiento de metodos (method chaining)'
+"""
+
 
 #Buscamos a los personajes que hayan tenido mas de 800 lineas a lo largo de toda la serie. 
 personajes_frecuentes = (
     personajes
-        .groupby('character')['n']
-        .sum()
-        .reset_index(name='n_total')
-        .query('n_total >= 800')
+        .groupby('character')['n'] #Agrupamos por personaje y nos quedamos solo con la columna 'n'.
+        .sum() #Sumamos las cantidades de lineas de todos los episodios que tuvo el personaje.
+        .reset_index(name='n_total') #Misma logica que reset
+        .query('n_total >= 800') #Nos quedamos con las filas que cumplan este requisito. Es analogo al filter de dplyr.
 )['character']
 
 #Filtramos para tener en cuenta solo estos personajes
@@ -108,15 +130,11 @@ personajes = ( #Los parentesis nos permiten escribir en varias lineas.
         .reset_index() #Recuperamos episode_name como columna.
     )
 
-# Agregar comentario de como pasar a formato long?
-
 # Juntamos el conjunto de datos de episodios con el de personajes
 episodios = pd.merge(episodios, personajes, #
                      on = "episode_name", #Que variable usamos para juntar.
                      how="inner") #Que metodo usamos para juntar, mismos que dplyr: inner, left, right. full_join de dplyr equivale a outer.
-
-#TODO: Checkear lo de full_join y outer
-
+                                #Siendo inner el por defecto.
 #%% 1.4 Tu Turno
 
 #Te animas a cargar el conjunto de datos con los creadores de cada episodio.
@@ -127,14 +145,25 @@ episodios = pd.merge(episodios, creadores)
 
 
 #%% 1.5 Terminamos con la preparacion
+
+#Dado que no nos interesa usar el episode_name como predictor pero si para identificar la observacion lo vamos a utilizar 
+#como indice.
+
 episodios = episodios.set_index("episode_name")
+
 print(episodios.describe())
 
 
 #%% 2. Matplotlib - Exploracion
 import matplotlib.pyplot as plt
 
-#TODO: Comentar alternativas: plotly, la que es como ggplot, ...?
+
+"""
+Existen varias alternativas como:
+    - Plotly (existe en R tambien que nos permite crear graficos interactivos.
+    - Altair (https://altair-viz.github.io/) se usa para graficos complejos e interactivos tambien
+    - Plotnine (!!) Tiene una sintaxis identica a ggplot y esta construido sobre matplotlib.
+"""
 
 #%%2.1 Histograma de puntajes
 plt.figure(figsize=(8, 6))
@@ -185,19 +214,19 @@ y_pred = lm.predict(X_test)
 
 #Queremos crear un dataframe con los resultados de la prediccion.
 resultados = pd.DataFrame({ 
-    "Observado": y_test.values.flatten(),
-    "Predicho": y_pred.flatten()
+    "Observado": y_test,
+    "Predicho": y_pred
 })
 
 #%% 3.5 Evaluamos resultados.
 from sklearn import metrics
 
-print(metrics.mean_absolute_error(resultados.Observado, resultados.Predicho))
+print(metrics.mean_absolute_error(resultados["Observado"], resultados["Predicho"]))
 
 #%% 3.6 Tu turno!
 
 ## Te animas a reportar el RMSE? https://scikit-learn.org/1.5/api/sklearn.metrics.html
-print(metrics.root_mean_squared_error(y_test, y_pred))
+print(metrics.root_mean_squared_error(resultados["Observado"], resultados["Predicho"]))
 
 ## Te animas a crear un grafico de observado vs predicho?
 plt.scatter(data=resultados, x="Observado", y="Predicho")
