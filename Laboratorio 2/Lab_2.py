@@ -16,13 +16,37 @@ Los tres conjuntos de datos comparten el campo `episode_name`.
 """
 
 #%% 1. Pandas - Preparacion de datos.
-import pandas as pd
+
+""" 
+Pandas es la biblioteca que se usa para trabajar con conjuntos de datos tabulados. Aunque en este curso no profundizaremos 
+en el uso de NumPy, es importante saber que Pandas utiliza las estructuras de datos de NumPy para optimizar el almacenamiento 
+y manipulación de datos en sus estructuras, como Series y DataFrames. 
+Esta dependencia también hace que sea común usar funciones de ambas bibliotecas en proyectos de análisis de datos en Python.
+
+Pandas tiene dos estructuras fundamentales (Serie y Dataframe)
+
+Serie: Informalmente podemos pensarlo como la columna de una tabla. (n, ) donde n es el numero de filas
+Dataframe: Es la tabla completa. Un dataframe esta compuesto por la combinacion de Series. 
+           Tiene dimensión (n, m) donde m numero de columnas
+"""""
+
+import pandas as pd #as se usa en Python para definir un alias. En vez de escribir pandas siempre que queramos usar una funcion
+                    #poderemos escribir pd (es estandar llamar pandas como pd).
 
 #%% 1.1 Como cargar un conjunto de datos.
 episodios = pd.read_csv("episodios.csv")
 
 #%% Vemos las primeras lineas del conjunto de datos para ver la estructura (Podemos usar la funcionalidad de spyder también).
 print(episodios.head())
+
+#%% Checkeamos las clases del dataframe y de su columna
+print(type(episodios))
+print(type(episodios["season"])) #episodios["season"] es una forma de seleccionar una columna, veremos otras.
+
+#%% Checkeamos las dimensiones
+print(episodios.shape)
+print(episodios["season"].shape)
+
 
 #%% 1.2 Seleccionar columnas.
 
@@ -73,7 +97,7 @@ personajes_frecuentes = (
 personajes = personajes[personajes['character'].isin(personajes_frecuentes)]
 
 #Pasamos los datos a formato wide.
-personajes = (
+personajes = ( #Los parentesis nos permiten escribir en varias lineas.
     personajes.
         pivot_table(
             index='episode_name', 
