@@ -166,6 +166,7 @@ from sklearn import model_selection, linear_model
 # AGREGARIA INFO SOBRE SCIKIT LEARN
 
 #%% 3.1 Separamos los predictores y la variable a predecir
+# EXPLICARIA UN POCO MAS ACA EL ANALISIS QUE VAMOS A HACER
 X = episodios.drop(columns = ["imdb_rating"])
 y = episodios.imdb_rating #Otra forma de seleccionar columnas
 
@@ -210,17 +211,6 @@ plt.plot([6.5,10],[6.5,10], color="black", linestyle="--")
 plt.show()
 # %%
 
-# POR QUE NO AGREGAR LA LINEA DE LA REGRESSION?
-import numpy as np
-
-slope, intercept = np.polyfit(resultados.Observado, resultados.Predicho, 1)
-
-x_vals = np.array([resultados.Observado.min(), resultados.Observado.max()])
-y_vals = intercept + slope * x_vals
-
-plt.scatter(data=resultados, x="Observado", y="Predicho")
-plt.xlabel("Observado")
-plt.ylabel("Predicho")
-plt.title("Observado vs Predicho")
-plt.plot(x_vals, y_vals, color='red', linestyle='-')
-plt.show()
+# QUIZA ESTARIA BIEN AGREGAR UN ANALISIS BREVE DE CUALES SON LA VARIABLES QUE
+# MEJOR EXPLICAN EL RATING, PARA DARLE UN CIERRE QUE VINCULE MEJOR CON EL TRABAJO
+# HECHO HASTA ACA CON LOS DATOS
