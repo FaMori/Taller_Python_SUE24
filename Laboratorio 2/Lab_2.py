@@ -238,7 +238,29 @@ from sklearn import metrics
 
 print(metrics.mean_absolute_error(resultados["Observado"], resultados["Predicho"]))
 
-#%% 3.6 Tu turno!
+#%% 3.6 Importancia de variables
+from sklearn import inspection
+# Calcula la importancia de las variables con permutación
+result = inspection.permutation_importance(lm, X_test, y_test, n_repeats=30, random_state=42)
+
+# Almacena la importancia de las variables
+importance_df = pd.DataFrame({
+    'variable': X.columns,
+    'importancia': result.importances_mean,
+    'desvio': result.importances_std
+})
+
+# Ordena las variables según su importancia
+importance_df = importance_df.sort_values(by='importancia', ascending=False)
+
+plt.figure(figsize=(10, 6))
+plt.barh(importance_df['Variable'], importance_df['importancia'], xerr=importance_df['desvio'])
+plt.xlabel("Importancia")
+plt.title("Importancia de las Variables (Permutación)")
+plt.gca().invert_yaxis()  # Invertir el eje para ver la variable más importante arriba
+plt.show()
+
+#%% 3.7 Tu turno!
 
 ## Te animas a reportar el RMSE? https://scikit-learn.org/1.5/api/sklearn.metrics.html
 print(metrics.root_mean_squared_error(resultados["Observado"], resultados["Predicho"]))
