@@ -193,6 +193,21 @@ plt.savefig("boxplot.png") #Exportamos el gráfico como un png.
 #%% 3. Scikit Learn - Modelos lineales
 from sklearn import model_selection, linear_model
 
+"""
+Scikit-Learn es una biblioteca de Python que permite entrenar modelos de aprendizaje supervisado y no supervisado.
+Además, ofrece un conjunto de herramientas para preprocesar datos, ajustar hiperparámetros y evaluar el rendimiento de los modelos.
+
+A diferencia de R, Scikit-Learn reúne una gran variedad de modelos y funcionalidades 
+relacionadas con el modelado en una única biblioteca!
+
+Scikit-Learn es un excelente ejemplo de una buena aplicación de la Programación Orientada a Objetos. 
+Dado el amplio número de modelos y herramientas, así como la colaboración de múltiples desarrolladores, 
+fue esencial seguir un diseño uniforme. 
+Por eso, todas las clases de modelos en Scikit-Learn implementan métodos estándar como fit para entrenar 
+modelos y predict para realizar predicciones, garantizando una experiencia de usuario consistente. [https://arxiv.org/abs/1309.0238]
+
+Cuenta con documentacion oficial muy completa: https://scikit-learn.org/stable/user_guide.html
+"""
 
 #%% 3.1 Separamos los predictores y la variable a predecir
 X = episodios.drop(columns = ["imdb_rating"])
