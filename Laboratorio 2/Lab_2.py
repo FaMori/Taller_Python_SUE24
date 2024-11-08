@@ -241,20 +241,33 @@ print(metrics.mean_absolute_error(resultados["Observado"], resultados["Predicho"
 #%% 3.6 Importancia de variables
 from sklearn import inspection
 # Calcula la importancia de las variables con permutación
-result = inspection.permutation_importance(lm, X_test, y_test, n_repeats=30, random_state=42)
+
+"""
+Importante: Como interpretar 
+
+La importancia se calcula como la diferencia entre el rendimiento original del modelo y el rendimiento con la característica permutada.
+
+Si la importancia es positiva, significa que la característica es importante para el modelo.
+Si la importancia es 0 o cercano a esto podemos decir que la variable no aporta a la hora de predecir. Si es negativa hasta podriamos decir que es perjudicial para el modelo.
+"""
+result = inspection.permutation_importance(lm, X_test, 
+                                           y_test, 
+                                           n_repeats=30, #La cantidad de veces que permutamos una variable
+                                           scoring = "neg_mean_absolute_error", #Metrica que vamos a utilizar
+                                           random_state=42)
 
 # Almacena la importancia de las variables
 importance_df = pd.DataFrame({
     'variable': X.columns,
-    'importancia': result.importances_mean,
-    'desvio': result.importances_std
+    'importancia': result.importances_mean, #En promedio cuanto cambio el score la permutacion.
+    'desvio': result.importances_std #Podemos calcular el desvio ya que hicimos varias permutaciones.
 })
 
 # Ordena las variables según su importancia
 importance_df = importance_df.sort_values(by='importancia', ascending=False)
 
 plt.figure(figsize=(10, 6))
-plt.barh(importance_df['Variable'], importance_df['importancia'], xerr=importance_df['desvio'])
+plt.barh(importance_df['variable'], importance_df['importancia'], xerr=importance_df['desvio'])
 plt.xlabel("Importancia")
 plt.title("Importancia de las Variables (Permutación)")
 plt.gca().invert_yaxis()  # Invertir el eje para ver la variable más importante arriba
