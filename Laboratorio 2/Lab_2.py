@@ -319,6 +319,22 @@ plt.show()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ###SOLUCIONES
 
 # print(episodios.tail())
