@@ -44,6 +44,9 @@ episodios = pd.read_csv("episodios.csv")
 #%% Vemos las primeras lineas del conjunto de datos para ver la estructura (Podemos usar la funcionalidad de spyder también).
 print(episodios.head())
 
+# El metodo tail() nos permite ver las ultimas lineas del conjunto de datos.
+# Pruebe visualizar los ultimos valores del conjunto de datos.
+
 #Podemos visualizar los datos con Spyder tambien!
 
 #%% Checkeamos las clases del dataframe y de su columna
@@ -70,6 +73,9 @@ seleccion = episodios.loc[:, ["episode_name", "season", "imdb_rating"]]
 
 #%% iloc: Selecciona columnas por índice.
 seleccion = episodios.iloc[:, [0, 1, 2,]]
+
+# Al igual que seleccionar columnas es posible seleccionar filas utilizando el metodo loc.
+# Pruebe seleccionar las filas 10 a 15 del conjunto de datos
 
 #%% 1.3 Creacion de atributos.
 
@@ -116,6 +122,10 @@ personajes_frecuentes = (
 )['character']
 
 #Filtramos para tener en cuenta solo estos personajes
+
+# el isin() nos permite seleccionar las filas que cumplan con una condicion, visualice el resultado
+# de hacer personajes['character'].isin(personajes_frecuentes)
+
 personajes = personajes[personajes['character'].isin(personajes_frecuentes)]
 
 #Pasamos los datos a formato wide.
@@ -221,6 +231,9 @@ X_train, X_test, y_train, y_test  = model_selection.train_test_split(X, y,
 
 
 #%% 3.3 Ajustamos el modelo con los datos de entrenamiento.
+
+# Vea los argumentos que requiere el metodo fit() de la clase LinearRegression.
+
 lm = linear_model.LinearRegression()
 lm.fit(X_train,y_train)
 
@@ -276,13 +289,46 @@ plt.show()
 #%% 3.7 Tu turno!
 
 ## Te animas a reportar el RMSE? https://scikit-learn.org/1.5/api/sklearn.metrics.html
-print(metrics.root_mean_squared_error(resultados["Observado"], resultados["Predicho"]))
 
 ## Te animas a crear un grafico de observado vs predicho?
-plt.scatter(data=resultados, x="Observado", y="Predicho")
-plt.xlabel("Observado")
-plt.ylabel("Predicho")
-plt.title("Observado vs Predicho")
-plt.plot([6.5,10],[6.5,10], color="black", linestyle="--")
-plt.show()
+
 # %%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###SOLUCIONES
+
+# print(episodios.tail())
+
+# seleccion = episodios.iloc[9:14, :]
+# print(metrics.root_mean_squared_error(resultados["Observado"], resultados["Predicho"]))
+
+# plt.scatter(data=resultados, x="Observado", y="Predicho")
+# plt.xlabel("Observado")
+# plt.ylabel("Predicho")
+# plt.title("Observado vs Predicho")
+# plt.plot([6.5,10],[6.5,10], color="black", linestyle="--")
+# plt.show()
