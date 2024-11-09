@@ -16,13 +16,47 @@ Los tres conjuntos de datos comparten el campo `episode_name`.
 """
 
 #%% 1. Pandas - Preparacion de datos.
-import pandas as pd
 
-#%% 1.1 Como cargar un conjunto de datos.
+""" 
+Pandas es la biblioteca que se usa para trabajar con conjuntos de datos tabulados. Aunque en este curso no profundizaremos 
+en el uso de NumPy, es importante saber que Pandas utiliza las estructuras de datos de NumPy para optimizar el almacenamiento 
+y manipulación de datos en sus estructuras, como Series y DataFrames. 
+Esta dependencia también hace que sea común usar funciones de ambas bibliotecas en proyectos de análisis de datos en Python.
+
+Pandas tiene dos estructuras fundamentales (Serie y Dataframe)
+
+Serie: Informalmente podemos pensarlo como la columna de una tabla. (n, ) donde n es el numero de filas
+Dataframe: Es la tabla completa. Un dataframe esta compuesto por la combinacion de Series. 
+           Tiene dimensión (n, m) donde m numero de columnas
+
+Ambas estructuras cuentan con indices que nos permiten identificar las filas. Estos indices pueden ser numeros (0,1,2,..)
+O pueden ser Texto ("Ana", "Beto", ...) o cualquier otro tipo de identificador unico.
+"""""
+
+import pandas as pd #as se usa en Python para definir un alias. En vez de escribir pandas siempre que queramos usar una funcion
+                    #poderemos escribir pd (es estandar llamar pandas como pd).
+
+#%% 1.1 Como cargar un conjunto de datos en un dataframe.
+
+## Verificar que en el angulo superior izquierdo tenemos configurado el directorio de trabajo.
 episodios = pd.read_csv("episodios.csv")
 
 #%% Vemos las primeras lineas del conjunto de datos para ver la estructura (Podemos usar la funcionalidad de spyder también).
 print(episodios.head())
+
+# El metodo tail() nos permite ver las ultimas lineas del conjunto de datos.
+# Pruebe visualizar los ultimos valores del conjunto de datos.
+
+#Podemos visualizar los datos con Spyder tambien!
+
+#%% Checkeamos las clases del dataframe y de su columna
+print(type(episodios))
+print(type(episodios["season"])) #episodios["season"] es una forma de seleccionar una columna, veremos otras.
+
+#%% Checkeamos las dimensiones
+print(episodios.shape)
+print(episodios["season"].shape)
+
 
 #%% 1.2 Seleccionar columnas.
 
@@ -40,6 +74,9 @@ seleccion = episodios.loc[:, ["episode_name", "season", "imdb_rating"]]
 #%% iloc: Selecciona columnas por índice.
 seleccion = episodios.iloc[:, [0, 1, 2,]]
 
+# Al igual que seleccionar columnas es posible seleccionar filas utilizando el metodo loc.
+# Pruebe seleccionar las filas 10 a 15 del conjunto de datos
+
 #%% 1.3 Creacion de atributos.
 
 """ 
@@ -53,27 +90,46 @@ Queremos crear las siguientes dos variables objetivo:
 dialogos = pd.read_csv("dialogos.csv")
 
 #Vamos a crear un conjunto de datos con la cantidad de lineas de cada personaje en un episodio
+personajes = dialogos.groupby(['episode_name', 'character']) #Agrupamos por episodio y personaje
+personajes = personajes.size() #Cuenta la cantidad de filas. Tenemos un objeto Series con indice ['episode_name', 'character']
+personajes = personajes.reset_index(name='n') #Cuando aplicamos reset_index a un objeto Series pasamos el indice a columnas.
+                                              #Por lo que la Series pasa a ser un Dataframe.
+                                              #Con el argumento name, marcamos el valor que va a tener la columna con el valor
+                                              #Que tenia la serie. Si no ponemos nada vamos a ver que la columna queda con el
+                                              #nombre 0.
+
+"""
+Podriamos haber escrito el codigo anterior de la siguiente forma:
 personajes = (
     dialogos
         .groupby(['episode_name', 'character']) #Agrupamos por episodio y personaje
         .size() #Cuenta la cantidad de filas
         .reset_index(name='n') #Dejamos con la estructura episode_name, character, n
-)
+    )
+
+Esta tecnica de llamar metodos a medida que vamos modificando el objeto se llama 
+'Encadamiento de metodos (method chaining)'
+"""
+
 
 #Buscamos a los personajes que hayan tenido mas de 800 lineas a lo largo de toda la serie. 
 personajes_frecuentes = (
     personajes
-        .groupby('character')['n']
-        .sum()
-        .reset_index(name='n_total')
-        .query('n_total >= 800')
+        .groupby('character')['n'] #Agrupamos por personaje y nos quedamos solo con la columna 'n'.
+        .sum() #Sumamos las cantidades de lineas de todos los episodios que tuvo el personaje.
+        .reset_index(name='n_total') #Misma logica que reset
+        .query('n_total >= 800') #Nos quedamos con las filas que cumplan este requisito. Es analogo al filter de dplyr.
 )['character']
 
 #Filtramos para tener en cuenta solo estos personajes
+
+# el isin() nos permite seleccionar las filas que cumplan con una condicion, visualice el resultado
+# de hacer personajes['character'].isin(personajes_frecuentes)
+
 personajes = personajes[personajes['character'].isin(personajes_frecuentes)]
 
 #Pasamos los datos a formato wide.
-personajes = (
+personajes = ( #Los parentesis nos permiten escribir en varias lineas.
     personajes.
         pivot_table(
             index='episode_name', 
@@ -84,15 +140,11 @@ personajes = (
         .reset_index() #Recuperamos episode_name como columna.
     )
 
-# Agregar comentario de como pasar a formato long?
-
 # Juntamos el conjunto de datos de episodios con el de personajes
 episodios = pd.merge(episodios, personajes, #
                      on = "episode_name", #Que variable usamos para juntar.
                      how="inner") #Que metodo usamos para juntar, mismos que dplyr: inner, left, right. full_join de dplyr equivale a outer.
-
-#TODO: Checkear lo de full_join y outer
-
+                                #Siendo inner el por defecto.
 #%% 1.4 Tu Turno
 
 #Te animas a cargar el conjunto de datos con los creadores de cada episodio.
@@ -103,14 +155,25 @@ episodios = pd.merge(episodios, creadores)
 
 
 #%% 1.5 Terminamos con la preparacion
+
+#Dado que no nos interesa usar el episode_name como predictor pero si para identificar la observacion lo vamos a utilizar 
+#como indice.
+
 episodios = episodios.set_index("episode_name")
+
 print(episodios.describe())
 
 
 #%% 2. Matplotlib - Exploracion
 import matplotlib.pyplot as plt
 
-#TODO: Comentar alternativas: plotly, la que es como ggplot, ...?
+
+"""
+Existen varias alternativas como:
+    - Plotly (existe en R tambien que nos permite crear graficos interactivos.
+    - Altair (https://altair-viz.github.io/) se usa para graficos complejos e interactivos tambien
+    - Plotnine (!!) Tiene una sintaxis identica a ggplot y esta construido sobre matplotlib.
+"""
 
 #%%2.1 Histograma de puntajes
 plt.figure(figsize=(8, 6))
@@ -140,6 +203,21 @@ plt.savefig("boxplot.png") #Exportamos el gráfico como un png.
 #%% 3. Scikit Learn - Modelos lineales
 from sklearn import model_selection, linear_model
 
+"""
+Scikit-Learn es una biblioteca de Python que permite entrenar modelos de aprendizaje supervisado y no supervisado.
+Además, ofrece un conjunto de herramientas para preprocesar datos, ajustar hiperparámetros y evaluar el rendimiento de los modelos.
+
+A diferencia de R, Scikit-Learn reúne una gran variedad de modelos y funcionalidades 
+relacionadas con el modelado en una única biblioteca!
+
+Scikit-Learn es un excelente ejemplo de una buena aplicación de la Programación Orientada a Objetos. 
+Dado el amplio número de modelos y herramientas, así como la colaboración de múltiples desarrolladores, 
+fue esencial seguir un diseño uniforme. 
+Por eso, todas las clases de modelos en Scikit-Learn implementan métodos estándar como fit para entrenar 
+modelos y predict para realizar predicciones, garantizando una experiencia de usuario consistente. [https://arxiv.org/abs/1309.0238]
+
+Cuenta con documentacion oficial muy completa: https://scikit-learn.org/stable/user_guide.html
+"""
 
 #%% 3.1 Separamos los predictores y la variable a predecir
 X = episodios.drop(columns = ["imdb_rating"])
@@ -153,6 +231,9 @@ X_train, X_test, y_train, y_test  = model_selection.train_test_split(X, y,
 
 
 #%% 3.3 Ajustamos el modelo con los datos de entrenamiento.
+
+# Vea los argumentos que requiere el metodo fit() de la clase LinearRegression.
+
 lm = linear_model.LinearRegression()
 lm.fit(X_train,y_train)
 
@@ -161,25 +242,93 @@ y_pred = lm.predict(X_test)
 
 #Queremos crear un dataframe con los resultados de la prediccion.
 resultados = pd.DataFrame({ 
-    "Observado": y_test.values.flatten(),
-    "Predicho": y_pred.flatten()
+    "Observado": y_test,
+    "Predicho": y_pred
 })
 
 #%% 3.5 Evaluamos resultados.
 from sklearn import metrics
 
-print(metrics.mean_absolute_error(resultados.Observado, resultados.Predicho))
+print(metrics.mean_absolute_error(resultados["Observado"], resultados["Predicho"]))
 
-#%% 3.6 Tu turno!
+#%% 3.6 Importancia de variables
+from sklearn import inspection
+# Calcula la importancia de las variables con permutación
+
+"""
+Importante: Como interpretar 
+
+La importancia se calcula como la diferencia entre el rendimiento original del modelo y el rendimiento con la característica permutada.
+
+Si la importancia es positiva, significa que la característica es importante para el modelo.
+Si la importancia es 0 o cercano a esto podemos decir que la variable no aporta a la hora de predecir. Si es negativa hasta podriamos decir que es perjudicial para el modelo.
+"""
+result = inspection.permutation_importance(lm, X_test, 
+                                           y_test, 
+                                           n_repeats=30, #La cantidad de veces que permutamos una variable
+                                           scoring = "neg_mean_absolute_error", #Metrica que vamos a utilizar
+                                           random_state=42)
+
+# Almacena la importancia de las variables
+importance_df = pd.DataFrame({
+    'variable': X.columns,
+    'importancia': result.importances_mean, #En promedio cuanto cambio el score la permutacion.
+    'desvio': result.importances_std #Podemos calcular el desvio ya que hicimos varias permutaciones.
+})
+
+# Ordena las variables según su importancia
+importance_df = importance_df.sort_values(by='importancia', ascending=False)
+
+plt.figure(figsize=(10, 6))
+plt.barh(importance_df['variable'], importance_df['importancia'], xerr=importance_df['desvio'])
+plt.xlabel("Importancia")
+plt.title("Importancia de las Variables (Permutación)")
+plt.gca().invert_yaxis()  # Invertir el eje para ver la variable más importante arriba
+plt.show()
+
+#%% 3.7 Tu turno!
 
 ## Te animas a reportar el RMSE? https://scikit-learn.org/1.5/api/sklearn.metrics.html
-print(metrics.root_mean_squared_error(y_test, y_pred))
 
 ## Te animas a crear un grafico de observado vs predicho?
-plt.scatter(data=resultados, x="Observado", y="Predicho")
-plt.xlabel("Observado")
-plt.ylabel("Predicho")
-plt.title("Observado vs Predicho")
-plt.plot([6.5,10],[6.5,10], color="black", linestyle="--")
-plt.show()
+
 # %%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###SOLUCIONES
+
+# print(episodios.tail())
+
+# seleccion = episodios.iloc[9:14, :]
+# print(metrics.root_mean_squared_error(resultados["Observado"], resultados["Predicho"]))
+
+# plt.scatter(data=resultados, x="Observado", y="Predicho")
+# plt.xlabel("Observado")
+# plt.ylabel("Predicho")
+# plt.title("Observado vs Predicho")
+# plt.plot([6.5,10],[6.5,10], color="black", linestyle="--")
+# plt.show()
