@@ -261,7 +261,7 @@ Importante: Como interpretar
 La importancia se calcula como la diferencia entre el rendimiento original del modelo y el rendimiento con la característica permutada.
 
 Si la importancia es positiva, significa que la característica es importante para el modelo.
-Si la importancia es 0 o cercano a esto podemos decir que la variable no aporta a la hora de predecir. Si es negativa hasta podriamos decir que es perjudicial para el modelo.
+Si la importancia es cercano a 0 o negativo a esto podemos decir que la variable no aporta a la hora de predecir.
 """
 result = inspection.permutation_importance(lm, X_test, 
                                            y_test, 
