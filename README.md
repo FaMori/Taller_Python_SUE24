@@ -5,45 +5,26 @@ Este curso ofrece una introducción a la ciencia de datos con Python, especialme
 
 ## Estructura del Curso - 3 Bloques:
 
-1. **Introducción Conceptual y Setup** (45 minutos)
-2. **Laboratorio 1: Fundamentos de Python para Usuarios de R** (60 minutos)
-3. **Laboratorio 2: Paquetes de Ciencia de Datos y Visualización en Python** (60 minutos)
+1. **Introducción a Python y su ecosistema* 
+2. **Laboratorio 1: Fundamentos de Python para Usuarios de R** 
+3. **Laboratorio 2: Paquetes de Ciencia de Datos y Visualización en Python** 
 
 ---
 
-### 1. Introducción Conceptual
+### 1. Introducción a Python y su ecosistema
 
-**Bienvenida y Objetivos del Curso**
-- Entender la importancia de Python en el ámbito de la ciencia de datos.
-- Comparar Python y R, identificando fortalezas y debilidades de cada lenguaje.
-
-**Comparación entre R y Python**
-- Fortalezas y debilidades de ambos lenguajes para distintos contextos de análisis.
-- Principales diferencias en flujos de trabajo y gestión de dependencias.
-
-**Flujos de Trabajo y Gestión de Dependencias**
-- **Entornos Virtuales**: Configuración y uso de entornos virtuales con `venv` o `conda`.
-- **Gestión de Paquetes**: Instalación de paquetes usando `pip` y `conda`.
-- **Creación de archivos environment.yml para Conda**: Facilitar la portabilidad de proyectos.
-- **Buenas prácticas para compartir proyectos**: Colaboración en proyectos de ciencia de datos.
-
-**Programación Orientada a Objetos (POO) en Python**
-- Conceptos básicos de POO: clases, objetos y métodos.
-- Diferencias entre el uso de POO en Python y enfoques funcionales en R.
-
-**Programación Funcional en R y Python**
-- Comparación entre los enfoques de programación funcional en ambos lenguajes.
-
-**Importación de Módulos en Python**
-- Uso de módulos incorporados.
-- Importación selectiva de funciones vs. módulos completos.
+** Python en Ciencia de Datos
+** Comparación de Ecosistemas: Python vs R
+** Elección del IDE
+** Gestión de Paquetes y Dependencias
+** Entornos Virtuales en Python
+** Flujo de Trabajo en Ciencia de Datos
+** Configuración del Entorno con Miniconda
+** Vinculación de entornos virtuales en Spyder
 
 ---
 
 ### 2. Laboratorio 1: Fundamentos de Python para Usuarios de R
-
-**Preparación**
-- Asegurarse de que todos los participantes tienen un entorno Python listo para trabajar.
 
 **Principales Diferencias Sintácticas entre R y Python**
 - **Indexación Base Cero**: Python comienza la indexación en 0.
@@ -65,7 +46,7 @@ Este curso ofrece una introducción a la ciencia de datos con Python, especialme
 
 ### 3. Laboratorio 2: Paquetes de Ciencia de Datos y Visualización en Python
 
-**Manipulación de Datos con Pandas y Numpy**
+**Manipulación de Datos con Pandas**
 
 - **Selección y Filtrado de Datos**:
   - Selección de filas y columnas con `.loc` y `.iloc`.
@@ -73,17 +54,18 @@ Este curso ofrece una introducción a la ciencia de datos con Python, especialme
 
 - **Transformación de Datos**:
   - Añadir, eliminar y modificar columnas.
-  - Manejo de datos faltantes.
   - Agrupación y agregación de datos.
 
 **Visualización de Datos con Matplotlib y Seaborn**
 
 - **Gráficos Básicos con Matplotlib**:
-  - Creación de gráficos de líneas, barras e histogramas.
+  - Creación de gráficos de líneas.
   - Personalización de gráficos: títulos, etiquetas y leyendas.
 
 - **Visualización Avanzada con Seaborn**:
-  - Creación de gráficos estadísticos: box plots, violin plots, mapas de calor.
+  - Creación de gráficos estadísticos.
   - Personalización de la estética de gráficos con temas predefinidos.
+
+- **Modelado Estadístico con Scikit-learn**
 
 ---
