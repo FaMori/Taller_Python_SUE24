@@ -200,7 +200,7 @@ print('Lista modificada:', lista)
 # una lista ya creada, utilizando el metodo append()
 
 # Ejercicio: Pruebe añadir al objeto que llamamos lista 
-# un nuevo valor que sea un booleano False
+# un nuevo objeto que sea un booleano False
 
 
 
@@ -226,17 +226,10 @@ print('Lista con el nuevo elemento:', lista)
 
 tupla = (5, 5.0, 'hola mundo', False)
 
-id(tupla)
-
 # Tambien es posible definir una tupla sin los parentesis, 
 # solamente separando los elementos por comas
 
-tupla = 5, 5.0, 'hola mundo', False, "nuevo elemento" 
-
-id(tupla)
-
-# En este caso no estamos modificando el objeto, sino 
-# creando uno nuevo (con distinto id) 
+tupla = 5, 5.0, 'hola mundo', False
 
 # Al igual que las listas es posible acceder a los 
 # elementos mediante su indice, siguiendo la misma logica
@@ -251,8 +244,19 @@ id(tupla)
 
 
 
+# Una posible confusion es que si bien las tuplas son
+# inmutables, es posible volver a definir una tupla.
+# En este caso se esta creando una nueva tupla y
+# asignandola a la variable tupla, NO se esta modificando
+# la tupla original.
 
-# A su vez una practica usual es desempaquetar los 
+tupla = 10, 5.0, 'hola mundo', False
+id(tupla)
+
+tupla = 5, 5.0, 'hola mundo', False
+id(tupla)
+
+# Una practica usual es desempaquetar los 
 # elementos de una tupla de la siguiente forma
 
 tupla = (5, 5.0, 'hola mundo', False)
@@ -349,7 +353,7 @@ conjunto = {5, 5.0, 'hola mundo', False, [5, 5.0]}
 # indice
 
 # Ejercicio: Pruebe acceder al primer elemento del 
-# conjunto
+# conjunto como si fuera una lista
 
 
 #%%
@@ -460,12 +464,12 @@ lista
 lista_copia_sup
 
 # Pero si se modifica un conjunto interno de la lista 
-copia superficial
+# copia superficial
 
 lista_copia_sup[0].add(5)
 
+# Lista original
 lista
-lista_copia_sup
 
 # Se observa que la modificación realizada en el conjunto
 # interno de la copia superficial afecta a la lista 
@@ -528,7 +532,7 @@ lista_copia_prof = deepcopy(lista)
 lista_copia_prof[0] is lista[0]
 
 # Lo que implica que si se modifica un objeto interno de
-#  la lista copia profunda no afectara a la lista original
+# la lista copia profunda no afectara a la lista original
 
 lista_copia_prof[0].add(5)
 
@@ -536,7 +540,8 @@ lista # Lista original
 
 lista_copia_prof # Lista copia profunda
 
-# Mas informacion sobre el modulo copy y la funcion deepcopy() se puede encontrar en el siguiente enlace:
+# Mas informacion sobre el modulo copy y la funcion deepcopy() se 
+# puede encontrar en el siguiente enlace:
 # https://docs.python.org/3/library/copy.html
 
 # En el siguiente enlace puede encontrar todas los modulos disponibles
@@ -630,7 +635,7 @@ print('x es mayor a 5') if x > 5 else print('x es menor o igual a 5')
 # es mayor a 5 y 20 en caso contrario utilizando el 
 # operador ternario
 
-z = 10 if x > 5 else 20
+
 
 # Condicionales con listas, diccionarios
 
@@ -644,7 +649,6 @@ lista = [5, 40, 60]
 
 if 5 in lista:
     print('5 se encuentra en la lista')
-
 
 # A su vez es posible realizar el negado de la condicion 
 # con not in que devuelve True si el elemento NO se 
@@ -689,7 +693,6 @@ for x in range(1, 4):
 
 # Ejericio: Pruebe hacer el mismo bucle pero sin ingresar 
 # el argumento de inicio (range(4))
-
 
 
 # - Iterar sobre una lista o tupla
@@ -770,10 +773,6 @@ while x < 5:
 # En este caso podemos destacar el uso del operador += el 
 # mismo es equivalente a escribir x = x + 1
 
-# Python cuenta con una serie de operadores que permiten
-# realizar operaciones de asignación de manera mas 
-# sencilla
-
 #%%
 # 6. Funciones
 
@@ -828,13 +827,13 @@ comparar_numeros(5)
 
 # Ejercicio: Cree una funcion llamada multiplicacion 
 # que tome x e y como argumentos y calcule la 
-# multiplicacion de ambos pero no utilice return
+# multiplicacion de ambos, pruebe hacerlo utilizando
+# return ... y sin colocar el return
 
 
 # Verifique que pasa al evaluar la funcion en este caso
 print('Resultado de la multiplicacion:', 
       multiplicacion(x=10, y=5))
-
 
 # En el ejemplo anterior puede parecer que definir una 
 # funcion para una operacion tan simple como una 
@@ -892,9 +891,7 @@ print('Resultado de la multiplicacion:',
 # ciertas caracteristicas que pueden diferir 
 # o no de otros autos, como por ejemplo la marca, modelo,
 # color, etc. estas caracteristicas
-# se denominan ATRIBUTOS de la clase, donde cada instancia
-# de la clase puede tener distintos valores para los 
-# atributos.
+# se denominan ATRIBUTOS de la clase.
 # A su vez los autos tienen distintas funcionalidades 
 # como encender el motor, acelerar, frenar, etc.
 # estas funcionalidades se denominan METODOS de la clase.
@@ -902,7 +899,7 @@ print('Resultado de la multiplicacion:',
 # Para definir una clase en Python se utiliza la palabra
 # reservada class seguida del nombre de la clase, 
 # por convención los nombres de las clases comienzan con
-#  mayusculas y se utiliza la llamada notacion CamelCase
+# mayusculas y se utiliza la llamada notacion CamelCase
 
 # Empezemos con un ejemplo simple, supongamos que se 
 # desea definir una clase llamada Auto
@@ -921,8 +918,8 @@ class Auto:
 
 auto = Auto()
 
-# Ahora me interesaria no solo crear una clase vacia sino
-# que me gustaria añadirle ciertos atributos, 
+# Ahora  interesaria no solo crear una clase vacia sino
+# que nos gustaria añadirle ciertos atributos, 
 # por ejemplo que cada auto generado tenga un color y 
 # un numero de puertas determinado.
 
@@ -935,10 +932,7 @@ auto = Auto()
 # clase.
 
 # Observese los __ al inicio y al final del nombre del 
-# metodo, indican que es un metodo especial, existen
-# una gran cantidad de metodos especiales en Python que 
-# se pueden utilizar para realizar operaciones
-# especiales en las clases.
+# metodo, indican que es un metodo especial
 
 class Auto:
     def __init__(self, color, num_puertas):
@@ -958,23 +952,6 @@ class Auto:
 # de los metodos de la clase, todos los metodos de la 
 # clase que tengan self como argumento podran acceder
 # a los atributos y metodos de la clase.
-
-# Ahora añadamos un metodo que describa las 
-# caracteristicas del auto, reutilizemos el metodo 
-# __init__ anteriormente definido
-
-class Auto:
-    def __init__(self, color, num_puertas):
-        print ("Se ha creado una instancia de la clase Auto")
-        self.color = color
-        self.num_puertas = num_puertas
-
-    def descripcion(self):
-        return print(f'El Auto es de color {self.color} y tiene {self.num_puertas} puertas')
-
-# Observe que el metodo descripcion no requiere los 
-# argumentos de color y num_puertas, ya que estos 
-# atributos son accesibles mediante self.
 
 # Para crear una instancia de la clase es igual que en el
 # caso de la clase vacia solamente que ahora le debemos
@@ -1006,10 +983,31 @@ auto_1.num_puertas
 
 # De igual forma podemos definir otra instancia de la 
 # clase Auto
+
 auto_2 = Auto(color='azul', num_puertas=2)
 
-# Ahora que se han creado las instancias de la clase 
-# apliquemos el metodo descripcion
+# Ahora añadamos un metodo que describa las 
+# caracteristicas del auto, reutilizemos el metodo 
+# __init__ anteriormente definido
+
+class Auto:
+    def __init__(self, color, num_puertas):
+        print ("Se ha creado una instancia de la clase Auto")
+        self.color = color
+        self.num_puertas = num_puertas
+
+    def descripcion(self):
+        return print(f'El Auto es de color {self.color} y tiene {self.num_puertas} puertas')
+
+# Observe que el metodo descripcion no requiere los 
+# argumentos de color y num_puertas, ya que estos 
+# atributos son accesibles mediante self.
+
+# Ahora probemos el metodo creado definamos nuevamente
+# las instancias y utilizemos el metodo
+auto_1 = Auto(color='rojo', num_puertas=4)
+
+auto_2 = Auto(color='azul', num_puertas=2)
 
 # Para la instancia auto_1
 auto_1.descripcion()
@@ -1028,20 +1026,20 @@ auto_2.descripcion()
 # indicados
 
 class MedidasResumen:
-    # Ingresa la lista como argumento del constructor
+    # Ingresamos la lista como argumento del constructor
     def __init__(self, lista):
         
         # Guardemos la lista de numeros en un atributo
         self.lista = lista
         
         # Puede ser de utilidad definir un 
-        # atributo que sea el largo de la lista.
+        # atributo que sea el largo de la lista (n).
         # Para ello puede usar la funcion len() que 
         # retorna la longitud de una lista
         
         self.n = # COMPLETAR
 
-        # Adicionalemnete creemos un placeholder para la 
+        # Adicionalmente creemos un placeholder para la 
         # media y la desviacion estandar
         # Estos valores seran None hasta que se llame a 
         # los metodos que la calculan
@@ -1049,7 +1047,7 @@ class MedidasResumen:
         self.media = None
         self.sd = None
 
-    # Crear el metodo que calcule la media
+    # Crearemos el metodo que calcule la media
     # Para calcular la media puede utilizar la 
     # funcion sum() que suma los elementos de una lista.
     # Recuerde que los atributos pueden ser accedidos
